@@ -13,52 +13,40 @@ def scrape_shoes(shoes, driver_path):
     options.add_argument("--headless")
     driver = webdriver.Chrome(service=service, options=options)
 
-    url = f"https://www.superkicks.in/search?q={shoes}"
+    url = f"https://www.vegnonveg.com/search?q={shoes}"
     driver.get(url)
 
-    WebDriverWait(driver, 20).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "st-pagination"))
-    )
-    time.sleep(2)
+    last_height = driver.execute_script("return document.body.scrollHeight")
+    while True:
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(5)  # wait for new items to load
+        
+        new_height = driver.execute_script("return document.body.scrollHeight")
+        if new_height == last_height:
+            break
+        last_height = new_height
 
     page_source = driver.page_source
     doc = BeautifulSoup(page_source, "html.parser")
 
-    page_text = doc.find_all(class_="page-item")
-    if len(page_text) > 1:
-        pages = int(page_text[-2].text)
-    else:
-        pages = 1
+    items_found = {}
 
-    items_found = {}  # will store all the shoe data in here
+    div = doc.find(class_="st-row st-cols-3 st-cols-sm-4 st-cols-md-4 st-product-wrapper")
 
-    for page in range(1, pages + 1):
-        url = f"https://www.superkicks.in/search?q={shoes}&p={page}"
-        driver.get(url)
-
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "st-pagination"))
-        )
-        time.sleep(2)
-
-        page_source = driver.page_source
-        doc = BeautifulSoup(page_source, "html.parser")
-        div = doc.find(class_="st-row st-cols-2 st-cols-sm-3 st-cols-md-3 st-product-wrapper")
-
-        if not div:
-            continue  
-
+    if div:
         items = div.find_all(string=re.compile(shoes, re.IGNORECASE))
+        count = 0
         for item in items:
-            parent = item.parent
+            parent = item.find_parent(class_="st-product st-double-image-card").find("a")
+            
             if parent.name != "a":
                 continue
+            link = parent['href'] # got another value
 
-            link = parent['href']
             grand_parent = item.find_parent(class_="st-product-details")
-            great_parent = item.find_parent(class_="st-product")
+            great_parent = item.find_parent(class_="st-product st-double-image-card")
             try:
-                price = grand_parent.find(class_=["new-price only-price", "new-price", "only-price", "old-price"]).text
+                price = grand_parent.find(class_=['new-price']).text
                 image = great_parent.find(class_="st-product-media").find("img").get("src")
                 items_found[item] = {
                     "price": float(price.replace("₹", "").replace(",", "").strip()),
@@ -67,7 +55,9 @@ def scrape_shoes(shoes, driver_path):
                 }
             except:
                 pass
-
+    else:
+        pass
+    
     driver.quit()
     return items_found
 
