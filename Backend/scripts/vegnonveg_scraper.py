@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 import re
 import time
 
-def scrape_shoes(shoes, driver_path):
+def vegnonveg_scrape_shoes(shoes, driver_path):
     service = Service(driver_path)
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
@@ -59,20 +59,3 @@ def scrape_shoes(shoes, driver_path):
     
     driver.quit()
     return items_found
-
-def main():
-    shoes = input('What shoes do you want to search for? ')
-    driver_path = '../../chromedriver-win64/chromedriver.exe'
-
-    items_found = scrape_shoes(shoes, driver_path)
-    sorted_items = sorted(items_found.items(), key=lambda x: x[1]['price'])
-
-    for item in sorted_items:
-        print(item[0])
-        print(f"${item[1]['price']}")
-        print(item[1]['link'])
-        print(item[1]['image'])
-        print("---------------------------------------")
-
-if __name__ == "__main__":
-    main()
