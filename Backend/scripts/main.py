@@ -40,5 +40,6 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         shoes = sys.argv[1]
         result = automation_script(shoes)
+        print(result)  # Debug
     else:
         print("No shoe name provided", file=sys.stderr)

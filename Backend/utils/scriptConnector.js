@@ -2,6 +2,7 @@ const { execFile } = require('child_process');
 const path = require('path');
 
 async function callPythonScript(shoes) {
+    console.log("Shoes received in scriptConnector:", shoes); // Debug
     return new Promise((resolve, reject) => {
         const scriptPath = path.join(__dirname, '../scripts/main.py');
         const pythonExecutable = 'python'; // or 'python3' if needed
@@ -17,6 +18,7 @@ async function callPythonScript(shoes) {
             }
             try {
                 const result = JSON.parse(stdout); // Parse the JSON output
+                console.log("Result received from Python script:", result); // Debug
                 resolve(result);
             } catch (e) {
                 reject(e);
