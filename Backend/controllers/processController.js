@@ -1,16 +1,18 @@
-async function getUserData(req, res, next) {
-    return res.status(201).json({
-        message: "user input recieved",
-    });
-}
+const { StatusCodes } = require("http-status-codes");
+const ProcessService = require("../services/processService");
 
-async function getSneakerDetails(req, res, next) {
-    return res.status(201).json({
-        message: "Sneaker data fetched ",
-    });
+const processService = new ProcessService();
+
+async function getSneakerName(req, res, next) {
+    try {
+        const sneaker_data = await processService.getSneakerDetails(req.body);
+
+        return res.status(StatusCodes.OK).send(sneaker_data);
+    } catch(error) {
+        next(error);
+    }
 }
 
 module.exports = {
-    getUserData,
-    getSneakerDetails,
+    getSneakerName,
 };

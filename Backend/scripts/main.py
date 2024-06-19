@@ -1,11 +1,12 @@
+import sys
+import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from nike_scraper import nike_scrape_shoes
 from superkicks_scraper import superkicks_scrape_shoes
 from vegnonveg_scraper import vegnonveg_scrape_shoes
 
-def main():
-    shoes = input('What shoes do you want to search for? ')
-    driver_path = '../../chromedriver-win64/chromedriver.exe'
+def automation_script(shoes):
+    driver_path = 'chromedriver-win64\chromedriver.exe'
 
     results = {}
 
@@ -22,9 +23,8 @@ def main():
             site = future_to_site[future]
             try:
                 results[site] = future.result()
-                print(f"Completed scraping {site}")
             except Exception as e:
-                print(f"Error scraping {site}: {e}")
+                print(f"Error scraping {site}: {e}", file=sys.stderr)
 
     all_items = {}
     for site, items in results.items():
@@ -32,12 +32,13 @@ def main():
 
     sorted_items = sorted(all_items.items(), key=lambda x: x[1]['price'])
 
-    for item in sorted_items:
-        print(item[0])
-        print(f"{item[1]['price']}")
-        print(item[1]['link'])
-        print(item[1]['image'])
-        print("---------------------------------------")
+    output = [{'name': item[0], 'price': item[1]['price'], 'link': item[1]['link'], 'image': item[1]['image']} for item in sorted_items]
+    
+    return json.dumps(output)
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1:
+        shoes = sys.argv[1]
+        result = automation_script(shoes)
+    else:
+        print("No shoe name provided", file=sys.stderr)

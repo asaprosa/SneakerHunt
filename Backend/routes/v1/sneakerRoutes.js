@@ -1,9 +1,8 @@
 const express = require('express');
-const { getUserData, getSneakerDetails } = require('../../controllers/processController');
+const { getSneakerName } = require('../../controllers/processController');
 
 const sneakerRouter = express.Router();
 
-sneakerRouter.post('/sneaker', getUserData); // takes user input from frontend
-sneakerRouter.post('/details', getSneakerDetails); // takes sneaker details from scraper
+sneakerRouter.post('/sneaker_name', getSneakerName); // takes user input for name of sneaker
 
 module.exports = sneakerRouter;

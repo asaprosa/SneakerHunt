@@ -1,18 +1,20 @@
 const express = require('express');
-const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
-dotenv.config();
 
 const apiRouter = require('./routes/apiRoutes');
+const errorHandler = require('./utils/errorHandler');
+const { PORT } = require('./configs/serverConfig');
 
 const app = express();
 
 app.use(bodyParser.text());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({extended : true}));
 
 app.use('/api', apiRouter);
 
-app.listen(process.env.PORT, (req, res) => {
-    console.log(`Server started at port ${process.env.PORT}`);
+app.use(errorHandler);
+
+app.listen(PORT, (req, res) => {
+    console.log(`Server started at port ${PORT}`);
 });
