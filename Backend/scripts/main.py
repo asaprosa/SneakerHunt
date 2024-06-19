@@ -6,7 +6,7 @@ from superkicks_scraper import superkicks_scrape_shoes
 from vegnonveg_scraper import vegnonveg_scrape_shoes
 
 def automation_script(shoes):
-    driver_path = 'chromedriver-win64\chromedriver.exe'
+    driver_path = 'chromedriver-win64\\chromedriver.exe'  # Ensure correct path handling
 
     results = {}
 
@@ -40,6 +40,6 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         shoes = sys.argv[1]
         result = automation_script(shoes)
-        print(result)  # Debug
+        print(result)  # Output the result
     else:
         print("No shoe name provided", file=sys.stderr)
