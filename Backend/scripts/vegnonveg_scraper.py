@@ -31,24 +31,25 @@ def vegnonveg_scrape_shoes(shoes, driver_path):
 
     items_found = {}
 
-    div = doc.find(class_="st-row st-cols-3 st-cols-sm-4 st-cols-md-4 st-product-wrapper")
+    div = doc.find(class_="animated animatedFadeInUp fadeInUp gt-products")
 
     if div:
         items = div.find_all(string=re.compile(shoes, re.IGNORECASE))
         for item in items:
-            parent = item.find_parent(class_="st-product st-double-image-card").find("a")
-            
-            if parent.name != "a":
-                continue
-            link = parent['href'] 
+            parent = item.find_parent(class_='product col-4-12 col-md-3-12').find('a')
 
-            grand_parent = item.find_parent(class_="st-product-details")
-            great_parent = item.find_parent(class_="st-product st-double-image-card")
+            if parent.name != 'a':
+                continue
+            link = parent['href']
+            
+            price_parent = item.find_parent(class_="info mt-10")
+            image_parent = item.find_parent(class_="gt-product-click")
             try:
-                price = grand_parent.find(class_=['new-price']).text
-                image = great_parent.find(class_="st-product-media").find("img").get("src")
+                price = price_parent.find_all("p")[-1].span.text
+                image = image_parent.find("img").get("src")
+                
                 items_found[item] = {
-                    "price": float(price.replace("₹", "").replace(",", "").strip()),
+                    "price": float(price.replace("₹", "").strip()),
                     "link": link,
                     "image": image
                 }
