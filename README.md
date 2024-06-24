@@ -46,9 +46,9 @@ npm run dev
 ```
 
 ### Configurations:
-1. Refer the `template.env` and setup a `.env` file accordingly for the requiered environment variables for the project.
+1. Refer the `template.env` and setup a `.env` file accordingly for the required environment variables for the project.
 
-## APIs (Enpoints) & Usage:
+## APIs (Endpoints) & Usage:
 
 ### Sneaker Data APIs
 1. ***Get the Sneaker Data***:
