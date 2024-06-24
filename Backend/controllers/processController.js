@@ -1,7 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
 const ProcessService = require("../services/processService");
+const ProcessRepository = require("../repositories/processRepository"); 
 
-const processService = new ProcessService();
+const processService = new ProcessService(new ProcessRepository());
 
 async function getSneakerName(req, res, next) {
     try {
