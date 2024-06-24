@@ -14,6 +14,20 @@ async function getSneakerName(req, res, next) {
     }
 }
 
+async function updateSneakerDetails(req, res, next) {
+    try {
+        const response = await processService.update_details();
+
+        return res.status(StatusCodes.ACCEPTED).json({
+            success: true,
+            message: response
+        });
+    } catch(error) {
+        next(error);
+    }
+}
+
 module.exports = {
     getSneakerName,
+    updateSneakerDetails
 };

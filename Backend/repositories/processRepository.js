@@ -24,6 +24,26 @@ class ProcessRepository {
             throw error;
         }
     }
+
+    async update_details() {
+        try {
+            const allShoes = await Shoes.find(); // taking out all the data from db
+
+            // Iterate over each shoe and update price if necessary
+            for (let shoe of allShoes) {
+                // Time consuming process if ran over 1 instance on regular PC
+                const updatedShoeData = await callPythonScript(shoe.name); // Call web scraper for updated data
+
+                const updatedShoe = updatedShoeData.find(item => item.name === shoe.name);
+
+                if (updatedShoe && updatedShoe.price !== shoe.price) { // updating the price if not equal from previous one
+                    await Shoes.updateOne({ _id: shoe._id }, { $set: { price: updatedShoe.price } });
+                }
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 module.exports = ProcessRepository;

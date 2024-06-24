@@ -10,6 +10,12 @@ class ProcessService {
         
         return shoes_data;
     }
+
+    async update_details() {
+        const update_response = await this.processRepository.update_details();
+
+        return update_response;
+    }
 }
 
 module.exports = ProcessService;
