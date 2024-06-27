@@ -1,3 +1,5 @@
+const callPythonScript = require("../utils/scriptConnector");
+
 class ProcessService {
     constructor(processRepository) {
         this.processRepository = processRepository;
@@ -6,9 +8,19 @@ class ProcessService {
     async getSneakerDetails(shoes_name) {
         const shoes = shoes_name.shoes;
         
-        const shoes_data = await this.processRepository.getSneakerDetails(shoes);
+        // getting the shoes data from the repository
+        let shoes_data = await this.processRepository.getSneakerDetails(shoes);
         
-        return shoes_data;
+        if(shoes_data && shoes_data.length > 0) { // if shoes present in db then return the data 
+            return shoes_data;
+        } else { // else call the scraper
+            shoes_data = await callPythonScript(shoes);
+
+            if(shoes_data && shoes_data.length > 0) {
+                // await this.processRepository.storeSneakerDetails(shoes_data); // store new scraper data in repository
+                return shoes_data; // returning the data to controller
+            }
+        } 
     }
 
     async update_details() {

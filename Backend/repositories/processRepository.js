@@ -10,15 +10,16 @@ class ProcessRepository {
 
             if (shoes_data.length > 0) { // if shoes present in db then return the response
                 return shoes_data;
-            } else { 
-                shoes_data = await callPythonScript(shoes); // call the web_scraper to get array of shoes
+            } 
+        } catch (error) {
+            throw error;
+        }
+    }
 
-                if (shoes_data && shoes_data.length > 0) {
-                    // Store the shoes_data in db
-                    await Shoes.insertMany(shoes_data, { ordered: false });
-                }
-
-                return shoes_data;
+    async storeSneakerDetails(shoes_data) {
+        try {
+            if(shoes_data && shoes_data.length > 0) {
+                await Shoes.insertMany(shoes_data, {ordered: false});
             }
         } catch (error) {
             throw error;
