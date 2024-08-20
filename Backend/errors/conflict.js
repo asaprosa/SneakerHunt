@@ -6,7 +6,7 @@ class ConflictError extends BaseError {
     super(
       "Conflict Error",
       StatusCodes.CONFLICT,
-      `${key} with ${propertyName} '${propertyValue}' already exists!`,
+      `${key} with ${propertyName} '${propertyValue}' already exists`,
       details
     );
   }
